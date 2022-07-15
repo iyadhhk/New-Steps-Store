@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Outlet, Link } from "react-router-dom";
+
+import { UserContext } from "../../contexts/user.context";
+import { signOutUser } from "../../utils/firebase/firebase.utils";
 
 import MobileMenu from "./mobile-menu.component";
 import NavLink from "../../components/nav-link/nav-link.component";
@@ -9,10 +12,17 @@ import { ReactComponent as Favorites } from "../../assets/heart.svg";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const dropdownHandler = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const signOutCallback = async () => {
+    await signOutUser();
+    setCurrentUser(null);
+  };
+
   return (
     <>
       <nav className="sticky top-0 bg-gray-100 z-30">
@@ -29,7 +39,16 @@ const Navigation = () => {
                   <NavLink route={"/shop/men"} title="Men" />
                   <NavLink route={"/shop/women"} title="Women" />
                   <NavLink route={"/shop/kids"} title="Kids" />
-                  <NavLink route={"/auth"} title="SignIn" />
+                  {currentUser ? (
+                    <span
+                      className="font-semibold text-md text-primary px-3 py-2 cursor-pointer"
+                      onClick={signOutCallback}>
+                      Sign out
+                    </span>
+                  ) : (
+                    <NavLink route={"/auth"} title="SignIn" />
+                  )}
+
                   <Link to="/wishlist" className="flex-shrink-0">
                     <Favorites className="fill-primary h-6 w-auto" />
                   </Link>
@@ -85,7 +104,13 @@ const Navigation = () => {
             </div>
           </div>
         </div>
-        {isMenuOpen && <MobileMenu menuHandler={dropdownHandler} />}
+        {isMenuOpen && (
+          <MobileMenu
+            user={currentUser}
+            signOut={signOutCallback}
+            menuHandler={dropdownHandler}
+          />
+        )}
       </nav>
       <Outlet />
     </>
