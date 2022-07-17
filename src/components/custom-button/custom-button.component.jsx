@@ -1,13 +1,13 @@
 const BUTTON_TYPE_CLASSES = {
   google: "bg-secondary",
   signing: "bg-primary hover:bg-secondary",
+  product: "mt-2 bg-secondary hover:bg-primary",
 };
 
-const CustomButton = ({ children, variant, ref, ...otherProps }) => {
+const CustomButton = ({ children, variant, ...otherProps }) => {
   return (
     <button
-      ref={ref}
-      className={`w-full px-7 py-3 text-white font-medium text-sm uppercase ${BUTTON_TYPE_CLASSES[variant]}`}
+      className={`w-full py-3 text-white font-medium text-sm uppercase ${BUTTON_TYPE_CLASSES[variant]}`}
       {...otherProps}>
       {children}
     </button>

@@ -12,6 +12,7 @@ const MobileMenu = ({ menuHandler, user, signOut }) => {
         <NavLink to="/shop/Kids" title="Kids" onClick={menuHandler} />
         {user ? (
           <NavLink
+            className="text-secondary font-semibold"
             to="/"
             title="Sign out"
             onClick={() => {

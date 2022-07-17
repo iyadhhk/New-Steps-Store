@@ -1,18 +1,21 @@
-import { createRef, useState } from "react";
+import { createRef, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-import {
-  createUserDocumentFromAuth,
-  signInWithGooglePopup,
-  signInAuthUser,
-} from "../../utils/firebase/firebase.utils";
+import { login, loginWithGoogle } from "../../features/auth/auth.service";
 
 import CustomButton from "../custom-button/custom-button.component";
 import InputField from "../input-field/input-field.component";
 import Spinner from "../spinner/spinner.component";
 import Alert from "../alert/alert.component";
+import {
+  selectActionType,
+  selectErrorMessage,
+  selectIsError,
+  selectIsLoading,
+} from "../../features/auth/auth.slice";
 
 const formSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Email is required"),
@@ -20,10 +23,15 @@ const formSchema = Yup.object({
 });
 
 const SignInForm = () => {
+  const dispatch = useDispatch();
   const ref = createRef();
-  const [isLoading, setIsLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState("empty error");
+
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
+  const errorMessage = useSelector(selectErrorMessage);
+  const actionType = useSelector(selectActionType);
 
   const {
     register,
@@ -37,30 +45,21 @@ const SignInForm = () => {
     },
   });
 
-  const logGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup();
-    const userDocRef = await createUserDocumentFromAuth(user);
-    console.log("userDocRef ===>", userDocRef);
+  useEffect(() => {
+    if (isError && errorMessage && actionType === "login") {
+      setShowAlert(true);
+      setAuthError(errorMessage);
+    }
+  }, [isError, errorMessage, actionType]);
+
+  const googleAuthHandler = () => {
+    dispatch(loginWithGoogle());
   };
 
-  const onSubmitForm = async (data, e) => {
-    setIsLoading(true);
-    const { email, password } = data;
-    try {
-      const user = await signInAuthUser(email, password);
-      console.log("singing in result ==>", user);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log("user sign in failed", error);
-      if (error.code === "auth/wrong-password") {
-        setAuthError("Wrong password");
-      } else if (error.code === "auth/user-not-found") {
-        setAuthError("Wrong email address");
-      }
-      setShowAlert(true);
-    }
+  const onSubmitForm = (data, e) => {
+    dispatch(login(data));
   };
+
   const onAlert = () => {
     setShowAlert(!showAlert);
   };
@@ -69,7 +68,7 @@ const SignInForm = () => {
       <h2 className="font-bold text-2xl my-4 text-primary">Already have an account?</h2>
       <span className="text-gray-500 mb-5">Sign in with your email and password</span>
 
-      {showAlert && <Alert color="red" message={authError} closeAlert={onAlert} />}
+      {showAlert && <Alert variant="error" message={authError} closeAlert={onAlert} />}
 
       <form onSubmit={handleSubmit(onSubmitForm)}>
         <div className="mb-6">
@@ -95,9 +94,9 @@ const SignInForm = () => {
             <span className="text-sm text-red-400 mb-2">{errors.password.message}</span>
           )}
         </div>
-        {isLoading ? (
+        {isLoading && actionType === "login" ? (
           <CustomButton disabled variant="google">
-            <Spinner />
+            <Spinner fill="#E5E7EB" size="md" />
             Loading...
           </CustomButton>
         ) : (
@@ -109,7 +108,7 @@ const SignInForm = () => {
           <p className="text-center font-semibold mx-4 mb-0">OR</p>
         </div>
 
-        <CustomButton type="button" variant="google" onClick={logGoogleUser}>
+        <CustomButton type="button" variant="google" onClick={googleAuthHandler}>
           Continue with Google
         </CustomButton>
       </form>

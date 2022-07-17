@@ -7,7 +7,15 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  getDocs,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCPXXOPJRKavb1P1r0wF51vg0Gbz0XvW4g",
@@ -26,6 +34,7 @@ googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
+// init service
 export const auth = getAuth(firebaseApp);
 
 // sign up with google: popup window to choose account
@@ -33,6 +42,14 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider)
 
 // get the database reference of our app
 export const db = getFirestore(firebaseApp);
+
+export const getUserDocument = async (userId) => {
+  const userDocRef = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userDocRef);
+  if (userSnapshot.exists()) {
+    return userSnapshot.data();
+  }
+};
 
 // create a document record in our database of a user
 // after signing with google or signing up
@@ -74,3 +91,15 @@ export const signInAuthUser = async (email, password) => {
 
 // sign out user
 export const signOutUser = async () => await signOut(auth);
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, "categories");
+  const newQuery = query(collectionRef);
+  const querySnapshot = await getDocs(newQuery);
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+  return categoryMap;
+};

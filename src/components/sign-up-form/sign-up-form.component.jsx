@@ -1,17 +1,20 @@
-import { createRef, useState } from "react";
+import { createRef, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-
-import {
-  createAuthUser,
-  createUserDocumentFromAuth,
-} from "../../utils/firebase/firebase.utils";
 
 import CustomButton from "../custom-button/custom-button.component";
 import InputField from "../input-field/input-field.component";
 import Spinner from "../spinner/spinner.component";
 import Alert from "../alert/alert.component";
+import { registerUser } from "../../features/auth/auth.service";
+import {
+  selectActionType,
+  selectErrorMessage,
+  selectIsError,
+  selectIsLoading,
+} from "../../features/auth/auth.slice";
 
 const formSchema = Yup.object({
   displayName: Yup.string()
@@ -27,10 +30,15 @@ const formSchema = Yup.object({
 });
 
 const SignUpForm = () => {
+  const dispatch = useDispatch();
   const ref = createRef();
-  const [isLoading, setIsLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [authError, setAuthError] = useState("");
+
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
+  const errorMessage = useSelector(selectErrorMessage);
+  const actionType = useSelector(selectActionType);
 
   const {
     register,
@@ -46,23 +54,15 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmitForm = async (data, e) => {
-    setIsLoading(true);
-    const { displayName, email, password } = data;
-    try {
-      const { user } = await createAuthUser(email, password);
-      const userDoc = await createUserDocumentFromAuth(user, { displayName });
-      setIsLoading(false);
-      console.log("userDoc ===>", userDoc);
-    } catch (error) {
-      setIsLoading(false);
-      if (error.code === "auth/email-already-in-use") {
-        setAuthError("User already exists");
-      } else {
-        setAuthError("Error encountered");
-      }
+  useEffect(() => {
+    if (isError && errorMessage && actionType === "register") {
       setShowAlert(true);
+      setAuthError(errorMessage);
     }
+  }, [isError, errorMessage, actionType]);
+
+  const onSubmitForm = async (data, e) => {
+    dispatch(registerUser(data));
   };
   const onAlert = () => {
     setShowAlert(!showAlert);
@@ -73,7 +73,7 @@ const SignUpForm = () => {
       <h2 className="font-bold text-2xl my-4 text-primary">Don't have an account?</h2>
       <span className="text-gray-500 mb-5">Sign up with your email and password</span>
 
-      {showAlert && <Alert color="red" message={authError} closeAlert={onAlert} />}
+      {showAlert && <Alert variant="error" message={authError} closeAlert={onAlert} />}
 
       <form onSubmit={handleSubmit(onSubmitForm)}>
         <div className="mb-6">
@@ -126,9 +126,9 @@ const SignUpForm = () => {
             </span>
           )}
         </div>
-        {isLoading ? (
+        {isLoading && actionType === "register" ? (
           <CustomButton disabled variant="google">
-            <Spinner />
+            <Spinner fill="#E5E7EB" size="md" />
             Loading...
           </CustomButton>
         ) : (
