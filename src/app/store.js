@@ -13,7 +13,9 @@ const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(process.env.NODE_ENV !== "production" && logger),
+    process.env.NODE_ENV !== "production"
+      ? getDefaultMiddleware().concat(logger)
+      : getDefaultMiddleware(),
 });
 
 export default store;
