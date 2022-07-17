@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
+import { addItemToCart } from "../../features/cart/cart.slice";
 import CustomButton from "../custom-button/custom-button.component";
 
 const ProductCard = ({ product }) => {
+  const dispatch = useDispatch();
   const [shoeSize, setShoeSize] = useState(0);
   const [likeProduct, setLikeProduct] = useState(false);
 
@@ -22,7 +25,7 @@ const ProductCard = ({ product }) => {
 
   const addToCartHandler = () => {
     if (shoeSize) {
-      console.log("added to cart");
+      dispatch(addItemToCart({ ...product, size: shoeSize }));
       setShoeSize(0);
     } else {
       alert("choose size");

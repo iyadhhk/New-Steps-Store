@@ -10,11 +10,13 @@ import NavLink from "../../components/nav-link/nav-link.component";
 import { ReactComponent as NewStepsLogo } from "../../assets/logo.svg";
 import { ReactComponent as Bag } from "../../assets/bag.svg";
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
+import { selectCount } from "../../features/cart/cart.slice";
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector(selectUser);
+  const count = useSelector(selectCount);
 
   const dropdownHandler = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,7 +60,7 @@ const Navigation = () => {
                 <Link to="/cart" className="relative flex-shrink-0 ml-4">
                   <Bag className="fill-primary h-6 w-auto" />
                   <span className="absolute top-[-10px] right-[-15px] p-1 inline-block text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">
-                    0
+                    {count}
                   </span>
                 </Link>
               </div>
