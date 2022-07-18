@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
 import { addItemToCart } from "../../features/cart/cart.slice";
 import CustomButton from "../custom-button/custom-button.component";
 
 const ProductCard = ({ product }) => {
+  const { name, price, imageUrl, size } = product;
+  const defaultSize = size[0];
   const dispatch = useDispatch();
-  const [shoeSize, setShoeSize] = useState(0);
+  const [shoeSize, setShoeSize] = useState(defaultSize);
   const [likeProduct, setLikeProduct] = useState(false);
 
-  const { name, price, imageUrl, size } = product;
-
-  const onClickSize = (size) => (shoeSize === size ? setShoeSize(0) : setShoeSize(size));
+  const onClickSize = (size) =>
+    shoeSize === size ? setShoeSize(defaultSize) : setShoeSize(size);
 
   const onLikeProduct = () => {
     if (!likeProduct) {
@@ -24,12 +25,8 @@ const ProductCard = ({ product }) => {
   };
 
   const addToCartHandler = () => {
-    if (shoeSize) {
-      dispatch(addItemToCart({ ...product, size: shoeSize }));
-      setShoeSize(0);
-    } else {
-      alert("choose size");
-    }
+    dispatch(addItemToCart({ ...product, size: shoeSize }));
+    // setShoeSize(defaultSize);
   };
 
   return (

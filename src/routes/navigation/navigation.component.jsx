@@ -53,7 +53,7 @@ const Navigation = () => {
                   )}
 
                   <Link to="/wishlist" className="flex-shrink-0">
-                    <Favorites className="fill-primary h-6 w-auto" />
+                    <Favorites className="fill-secondary h-6 w-auto" />
                   </Link>
                 </div>
 
