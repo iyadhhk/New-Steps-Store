@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
+  removeItemFromCart,
   selectCartItems,
   selectCount,
   selectTotal,
@@ -12,11 +13,14 @@ import { ReactComponent as RemoveIcon } from "../../assets/minus.svg";
 import { ReactComponent as ClearIcon } from "../../assets/remove.svg";
 
 const Cart = () => {
+  const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const count = useSelector(selectCount);
   const total = useSelector(selectTotal);
 
-  const onRemoveFromCartHandler = () => {};
+  const onRemoveFromCartHandler = (data) => {
+    dispatch(removeItemFromCart(data));
+  };
   const onAddToCartHandler = () => {};
   const onClearHandler = () => {};
 
@@ -48,7 +52,16 @@ const Cart = () => {
                         <span>Size</span>
                         <span>{itemSize}</span>
                         <span>
-                          <RemoveIcon className="fill-red-400 h-5" />
+                          <RemoveIcon
+                            onClick={() =>
+                              onRemoveFromCartHandler({
+                                id: cartItem.id,
+                                size: itemSize,
+                                price: cartItem.price,
+                              })
+                            }
+                            className="fill-red-400 h-5 cursor-pointer"
+                          />
                         </span>
                       </div>
                     ))}
@@ -56,7 +69,7 @@ const Cart = () => {
                   <span
                     className="cursor-pointer m-2"
                     onClick={() => onClearHandler(cartItem.id)}>
-                    <ClearIcon className="fill-red-400 h-5" />
+                    <ClearIcon className="fill-red-400 h-5 cursor-pointer" />
                   </span>
                 </div>
               </div>

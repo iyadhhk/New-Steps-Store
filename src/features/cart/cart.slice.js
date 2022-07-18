@@ -31,11 +31,28 @@ export const cartSlice = createSlice({
       state.count += 1;
       state.total += price;
     },
-    removeItemFromCart: (state, action) => {},
+    removeItemFromCart: (state, action) => {
+      const { id, size, price } = action.payload;
+      const { cartItems } = state;
+      const existingCartItem = cartItems.find((item) => item.id === id);
+      if (existingCartItem.itemSizes.length > 1) {
+        state.cartItems = cartItems.map((item) => {
+          if (item.id === id) {
+            const indexOfSize = item.itemSizes.indexOf(size);
+            item.itemSizes.splice(indexOfSize, 1);
+          }
+          return item;
+        });
+      } else {
+        state.cartItems = cartItems.filter((item) => item.id !== id);
+      }
+      state.count -= 1;
+      state.total -= price;
+    },
   },
 });
 
-export const { addItemToCart } = cartSlice.actions;
+export const { addItemToCart, removeItemFromCart } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.cartItems;
 export const selectCount = (state) => state.cart.count;
