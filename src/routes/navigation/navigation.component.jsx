@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, Link } from "react-router-dom";
 
@@ -14,6 +14,7 @@ import { selectCount } from "../../features/cart/cart.slice";
 
 const Navigation = () => {
   const dispatch = useDispatch();
+  const [countItems, setCountItems] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector(selectUser);
   const count = useSelector(selectCount);
@@ -25,6 +26,10 @@ const Navigation = () => {
   const signOutCallback = () => {
     dispatch(logout());
   };
+
+  useEffect(() => {
+    setCountItems(count);
+  }, [count]);
 
   return (
     <>
@@ -60,7 +65,7 @@ const Navigation = () => {
                 <Link to="/cart" className="relative flex-shrink-0 ml-4">
                   <Bag className="fill-primary h-6 w-auto" />
                   <span className="absolute top-[-10px] right-[-15px] p-1 inline-block text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">
-                    {count}
+                    {countItems}
                   </span>
                 </Link>
               </div>

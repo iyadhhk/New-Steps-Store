@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
   removeItemFromCart,
+  clearItemFromCart,
   selectCartItems,
   selectCount,
   selectTotal,
 } from "../../features/cart/cart.slice";
 
-import { ReactComponent as AddIcon } from "../../assets/add-plus.svg";
 import { ReactComponent as RemoveIcon } from "../../assets/minus.svg";
 import { ReactComponent as ClearIcon } from "../../assets/remove.svg";
 
@@ -21,8 +20,9 @@ const Cart = () => {
   const onRemoveFromCartHandler = (data) => {
     dispatch(removeItemFromCart(data));
   };
-  const onAddToCartHandler = () => {};
-  const onClearHandler = () => {};
+  const onClearHandler = (data) => {
+    dispatch(clearItemFromCart(data));
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -68,7 +68,13 @@ const Cart = () => {
                   </div>
                   <span
                     className="cursor-pointer m-2"
-                    onClick={() => onClearHandler(cartItem.id)}>
+                    onClick={() =>
+                      onClearHandler({
+                        id: cartItem.id,
+                        price: cartItem.price,
+                        quantity: cartItem.itemSizes.length,
+                      })
+                    }>
                     <ClearIcon className="fill-red-400 h-5 cursor-pointer" />
                   </span>
                 </div>
