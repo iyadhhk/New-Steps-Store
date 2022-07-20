@@ -6,6 +6,7 @@ import {
   selectIsLoading,
   selectIsSuccess,
 } from "../../features/categories/categories.slice";
+import { selectItemsRef } from "../../features/wishlist/wishlist.slice";
 
 import ProductCard from "../product-card/product-card.component";
 import Spinner from "../spinner/spinner.component";
@@ -16,6 +17,7 @@ const Category = ({ category }) => {
   const products = useSelector(selectCategories);
   const isLoading = useSelector(selectIsLoading);
   const isSuccess = useSelector(selectIsSuccess);
+  const itemsRef = useSelector(selectItemsRef);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -41,7 +43,11 @@ const Category = ({ category }) => {
         <div className="grid-cols-1 justify-items-center items-center md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
           {productsList &&
             productsList.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isLiked={itemsRef.includes(product.id)}
+              />
             ))}
         </div>
       )}

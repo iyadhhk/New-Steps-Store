@@ -3,30 +3,33 @@ import { useDispatch } from "react-redux";
 
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
 import { addItemToCart } from "../../features/cart/cart.slice";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "../../features/wishlist/wishlist.slice";
 import CustomButton from "../custom-button/custom-button.component";
 
-const ProductCard = ({ product }) => {
-  const { name, price, imageUrl, size } = product;
+const ProductCard = ({ product, isLiked }) => {
+  const { id, name, price, imageUrl, size } = product;
   const defaultSize = size[0];
   const dispatch = useDispatch();
   const [shoeSize, setShoeSize] = useState(defaultSize);
-  const [likeProduct, setLikeProduct] = useState(false);
+  const [likeProduct, setLikeProduct] = useState(isLiked);
 
   const onClickSize = (size) =>
     shoeSize === size ? setShoeSize(defaultSize) : setShoeSize(size);
 
   const onLikeProduct = () => {
     if (!likeProduct) {
-      console.log("product liked");
+      dispatch(addToWishlist(product));
     } else {
-      console.log("product unliked");
+      dispatch(removeFromWishlist(id));
     }
     setLikeProduct(!likeProduct);
   };
 
   const addToCartHandler = () => {
     dispatch(addItemToCart({ ...product, size: shoeSize }));
-    // setShoeSize(defaultSize);
   };
 
   return (

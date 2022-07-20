@@ -14,6 +14,7 @@ import WishList from "./routes/wishlist/wishlist.component";
 
 const App = () => {
   const dispatch = useDispatch();
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
       if (userAuth) {
@@ -24,7 +25,6 @@ const App = () => {
             displayName: userAuth.displayName,
           })
         );
-      } else {
       }
     });
 

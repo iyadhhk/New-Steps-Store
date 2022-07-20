@@ -11,6 +11,7 @@ import { ReactComponent as NewStepsLogo } from "../../assets/logo.svg";
 import { ReactComponent as Bag } from "../../assets/bag.svg";
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
 import { selectCount } from "../../features/cart/cart.slice";
+import { selectCountWishlist } from "../../features/wishlist/wishlist.slice";
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useSelector(selectUser);
   const count = useSelector(selectCount);
+  const countWishlist = useSelector(selectCountWishlist);
 
   const dropdownHandler = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -57,16 +59,27 @@ const Navigation = () => {
                     <NavLink route={"/auth"} title="SignIn" />
                   )}
 
-                  <Link to="/wishlist" className="flex-shrink-0">
+                  <Link to="/wishlist" className="relative flex-shrink-0">
                     <Favorites className="fill-secondary h-6 w-auto" />
+                    {countWishlist > 0 && (
+                      <div className="flex items-center justify-center absolute top-[-10px] left-[-15px] bg-blue-100 rounded-full w-5 h-5">
+                        <span className="text-xs font-semibold text-blue-800">
+                          {countWishlist}
+                        </span>
+                      </div>
+                    )}
                   </Link>
                 </div>
 
                 <Link to="/cart" className="relative flex-shrink-0 ml-4">
                   <Bag className="fill-primary h-6 w-auto" />
-                  <span className="absolute top-[-10px] right-[-15px] p-1 inline-block text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">
-                    {countItems}
-                  </span>
+                  {countItems > 0 && (
+                    <div className="flex items-center justify-center absolute top-[-10px] right-[-15px] bg-blue-100 rounded-full w-5 h-5">
+                      <span className="text-xs font-semibold text-blue-800">
+                        {countItems}
+                      </span>
+                    </div>
+                  )}
                 </Link>
               </div>
             </div>

@@ -22,7 +22,6 @@ const authFulfilled = (state, action) => {
   state.isError = false;
   state.errorMessage = "";
   state.isSuccess = true;
-  console.log("reducer ===>", action.payload);
   state.currentUser = { ...action.payload };
 
   // state.currentUser = action.payload;

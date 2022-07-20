@@ -30,7 +30,7 @@ const Cart = () => {
         your shopping bag
       </h1>
       <p className="text-center text-gray-500">({count} Items)</p>
-      <div className="container max-w-3xl border-2">
+      <div className="container max-w-3xl p-2               ">
         {cartItems &&
           cartItems.map((cartItem) => (
             <div
@@ -38,7 +38,7 @@ const Cart = () => {
               key={cartItem.id}>
               <img className="h-[150px]" src={cartItem.imageUrl} alt="" />
               <div className="flex flex-col flex-1">
-                <div className="flex justify-between border-2 w-full">
+                <div className="flex justify-between border-b mb-4 w-full">
                   <p>{cartItem.name}</p>
                   <p>${cartItem.price}</p>
                 </div>
@@ -48,7 +48,7 @@ const Cart = () => {
                     {cartItem.itemSizes.map((itemSize, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between border-2 px-4 ">
+                        className="flex items-center justify-between my-2 mx-4 px-4 ">
                         <span>Size</span>
                         <span>{itemSize}</span>
                         <span>
@@ -60,29 +60,33 @@ const Cart = () => {
                                 price: cartItem.price,
                               })
                             }
-                            className="fill-red-400 h-5 cursor-pointer"
+                            className="fill-primary h-5 cursor-pointer"
                           />
                         </span>
                       </div>
                     ))}
                   </div>
-                  <span
-                    className="cursor-pointer m-2"
-                    onClick={() =>
-                      onClearHandler({
-                        id: cartItem.id,
-                        price: cartItem.price,
-                        quantity: cartItem.itemSizes.length,
-                      })
-                    }>
-                    <ClearIcon className="fill-red-400 h-5 cursor-pointer" />
-                  </span>
+                  {cartItem.itemSizes.length > 1 && (
+                    <span
+                      className="cursor-pointer m-2"
+                      onClick={() =>
+                        onClearHandler({
+                          id: cartItem.id,
+                          price: cartItem.price,
+                          quantity: cartItem.itemSizes.length,
+                        })
+                      }>
+                      <ClearIcon className="fill-primary h-5 cursor-pointer" />
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
           ))}
+        {total > 0 && (
+          <p className="text-right text-lg m-2  text-gray-500">Total: ${total}</p>
+        )}
       </div>
-      <p>Total: {total}$</p>
       {/* <PaymentForm /> */}
     </div>
   );

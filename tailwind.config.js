@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-      sans: ['Barlow', 'sans-serif'],
-    },
+        sans: ["Barlow", "sans-serif"],
+      },
       colors: {
         primary: "#233e6e",
         secondary: "#3eabde",
