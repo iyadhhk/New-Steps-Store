@@ -30,7 +30,7 @@ const Cart = () => {
         your shopping bag
       </h1>
       <p className="text-center text-gray-500">({count} Items)</p>
-      <div className="container max-w-3xl p-2               ">
+      <div className="container max-w-3xl p-2">
         {cartItems &&
           cartItems.map((cartItem) => (
             <div
@@ -60,7 +60,7 @@ const Cart = () => {
                                 price: cartItem.price,
                               })
                             }
-                            className="fill-primary h-5 cursor-pointer"
+                            className="fill-red-400 h-5 cursor-pointer"
                           />
                         </span>
                       </div>

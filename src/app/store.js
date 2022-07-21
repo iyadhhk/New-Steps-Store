@@ -10,7 +10,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import logger from "redux-logger";
+// import logger from "redux-logger";
 
 import authReducer from "../features/auth/auth.slice";
 import categoriesReducer from "../features/categories/categories.slice";
@@ -40,7 +40,8 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(process.env.NODE_ENV !== "production" && logger),
+    }),
+  // .concat(process.env.NODE_ENV !== "production" && logger),
 });
 
 export const persistor = persistStore(store);

@@ -9,15 +9,19 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { store, persistor } from "./app/store";
 
+import ScrollToTop from "./components/scroll-to-top/scroll-to-top.component";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <App />
-        </PersistGate>
-      </Provider>
+      <ScrollToTop>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <App />
+          </PersistGate>
+        </Provider>
+      </ScrollToTop>
     </BrowserRouter>
   </React.StrictMode>
 );
