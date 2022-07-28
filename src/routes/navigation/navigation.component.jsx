@@ -131,6 +131,7 @@ const Navigation = () => {
             user={user}
             signOut={signOutCallback}
             menuHandler={dropdownHandler}
+            countWishlist={countWishlist}
           />
         )}
       </nav>
